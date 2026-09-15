@@ -1,1 +1,11 @@
-
+alert_id,true_severity,is_true_positive,attack_category,requires_action,threat_confidence,analyst_notes
+a1b2c3d4,critical,True,brute_force,True,0.89,Verified threat
+e5f6g7h8,low,False,failed_login,False,0.15,False positive - legitimate activity
+i9j0k1l2,critical,True,dns_tunneling,True,0.94,Verified threat
+m3n4o5p6,high,True,powershell_encoded,True,0.78,Verified threat
+q7r8s9t0,low,False,port_scan,False,0.32,False positive - legitimate activity
+u1v2w3x4,critical,True,malware_signature,True,0.97,Verified threat
+y5z6a7b8,high,True,lateral_movement,True,0.85,Verified threat
+c9d0e1f2,low,False,failed_login,False,0.12,False positive - legitimate activity
+g3h4i5j6,critical,True,brute_force,True,0.91,Verified threat
+k7l8m9n0,high,True,powershell_encoded,True,0.82,Verified threat
