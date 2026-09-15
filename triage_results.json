@@ -1,0 +1,42 @@
+{
+  "processing_time": 2.4531,
+  "total_alerts": 150,
+  "method": "LLM-Simulated",
+  "results": [
+    {
+      "alert_id": "a1b2c3d4",
+      "original_severity": "critical",
+      "ai_priority": "CRITICAL",
+      "risk_score": 95,
+      "method": "LLM-Simulated",
+      "reasoning": "High confidence due to external IP and privileged account usage",
+      "timestamp_processed": "2024-04-12T10:15:23"
+    },
+    {
+      "alert_id": "e5f6g7h8",
+      "original_severity": "low",
+      "ai_priority": "LOW",
+      "risk_score": 15,
+      "method": "LLM-Simulated",
+      "reasoning": "Standard activity, requires manual review",
+      "timestamp_processed": "2024-04-12T10:15:23"
+    },
+    {
+      "alert_id": "i9j0k1l2",
+      "original_severity": "critical",
+      "ai_priority": "CRITICAL",
+      "risk_score": 92,
+      "method": "LLM-Simulated",
+      "reasoning": "High confidence due to external IP and privileged account usage",
+      "timestamp_processed": "2024-04-12T10:15:23"
+    }
+  ],
+  "summary": {
+    "critical_count": 23,
+    "high_count": 31,
+    "medium_count": 45,
+    "low_count": 51,
+    "avg_risk_score": 62.4,
+    "alerts_per_second": 61.1
+  }
+}
