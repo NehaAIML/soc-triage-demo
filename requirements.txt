@@ -1,8 +1,8 @@
 # Core dependencies for SOC Triage Engine
 # Note: This project uses simulated AI for the demo. 
-# To use the real OpenAI API, uncomment the line below.
+# To use the real OpenAI API, uncomment the lines below.
 
-# openai>=1.35.0
-# pandas>=2.2.2
-# scikit-learn>=1.5.0
-# numpy>=1.26.4,<2.0.0
+# openai>=1.45.0
+# pandas>=2.2.3
+# scikit-learn>=1.5.1
+# numpy>=1.26.4,<2.2.0
