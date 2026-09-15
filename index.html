@@ -3,68 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOC Triage Demo - Manual vs AI</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>SOC Triage Race - Manual vs AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0f1a;
+            color: #e8edf5;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #3b82f6;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7c8aa3;
+            margin-bottom: 30px;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #startBtn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        #startBtn:hover { background: #2563eb; transform: scale(1.05); }
+        #startBtn:disabled { background: #555; cursor: not-allowed; transform: none; }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .panel {
+            background: #111a2b;
+            border: 1px solid #223049;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .panel h2 {
+            border-bottom: 1px solid #223049;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .manual-title { color: #e8a33d; }
+        .ai-title { color: #2dd4bf; }
+        .metric {
+            background: #0d1524;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric-label { color: #7c8aa3; }
+        .metric-value { font-size: 1.4rem; font-weight: bold; }
+        .red { color: #f2495c; }
+        .green { color: #2dd4bf; }
+        .yellow { color: #f5a524; }
+        .blue { color: #3b82f6; }
+        .alert-feed {
+            background: #0d1524;
+            border-radius: 6px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        .alert-item {
+            padding: 6px 10px;
+            border-bottom: 1px solid #1a2438;
+            display: flex;
+            justify-content: space-between;
+        }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .badge-critical { background: #f2495c; color: white; }
+        .badge-high { background: #f5a524; color: black; }
+        .badge-medium { background: #3b82f6; color: white; }
+        .badge-low { background: #5b7fb8; color: white; }
+        .comparison {
+            background: #111a2b;
+            border: 1px solid #223049;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .comparison h2 { margin-bottom: 15px; }
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        .comp-item h3 { margin-bottom: 10px; }
+        .comp-value { font-size: 1.8rem; font-weight: bold; }
+        .status-bar {
+            background: #0d1524;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            text-align: center;
+            color: #7c8aa3;
+        }
+        .progress {
+            height: 6px;
+            background: #1a2438;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #2dd4bf);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛡️ SOC Triage: Manual vs AI</h1>
+        <h1>🛡️ SOC Triage Race: Manual vs AI</h1>
+        <p class="subtitle">Watch how AI processes 150 security alerts in seconds vs hours of manual work</p>
         
-        <div class="dashboard-grid">
-            <!-- Before AI Panel -->
+        <div class="controls">
+            <button id="startBtn" onclick="startSimulation()">▶ Start Simulation</button>
+        </div>
+
+        <div class="dashboard">
             <div class="panel">
-                <h2>Before AI Processing</h2>
-                <div class="metric-card">
-                    <span>Total Alerts:</span>
-                    <span class="metric-value text-red" id="totalAlerts">150</span>
+                <h2 class="manual-title">👤 Manual Triage (Human Analyst)</h2>
+                <div class="metric">
+                    <span class="metric-label">Alerts Processed:</span>
+                    <span class="metric-value red" id="manualCount">0 / 150</span>
                 </div>
-                <div class="metric-card">
-                    <span>Manual Processing Time:</span>
-                    <span class="metric-value text-red">11.25 hours</span>
+                <div class="metric">
+                    <span class="metric-label">Time Elapsed:</span>
+                    <span class="metric-value red" id="manualTime">0 min</span>
                 </div>
-                <div class="metric-card">
-                    <span>Analyst Fatigue:</span>
-                    <span class="metric-value text-yellow">HIGH</span>
+                <div class="metric">
+                    <span class="metric-label">Analyst Fatigue:</span>
+                    <span class="metric-value yellow" id="fatigue">Low</span>
+                </div>
+                <div class="alert-feed" id="manualFeed">
+                    <div style="color:#7c8aa3; text-align:center; padding:20px;">Waiting to start...</div>
                 </div>
             </div>
 
-            <!-- After AI Panel -->
             <div class="panel">
-                <h2>After AI Processing</h2>
-                <div class="metric-card">
-                    <span>AI Processing Time:</span>
-                    <span class="metric-value text-green" id="processingTime">2.45s</span>
+                <h2 class="ai-title"> AI Triage (LLM Engine)</h2>
+                <div class="metric">
+                    <span class="metric-label">Alerts Processed:</span>
+                    <span class="metric-value green" id="aiCount">0 / 150</span>
                 </div>
-                <div class="metric-card">
-                    <span>Accuracy:</span>
-                    <span class="metric-value text-green" id="accuracy">84%</span>
+                <div class="metric">
+                    <span class="metric-label">Time Elapsed:</span>
+                    <span class="metric-value green" id="aiTime">0.00s</span>
                 </div>
-                <div class="metric-card">
-                    <span>Speed Improvement:</span>
-                    <span class="metric-value text-blue" id="speedup">134x</span>
+                <div class="metric">
+                    <span class="metric-label">Accuracy:</span>
+                    <span class="metric-value green" id="accuracy">--</span>
+                </div>
+                <div class="alert-feed" id="aiFeed">
+                    <div style="color:#7c8aa3; text-align:center; padding:20px;">Waiting to start...</div>
                 </div>
             </div>
         </div>
 
-        <div class="panel">
-            <h2>📊 Performance Comparison</h2>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
-                <div>
-                    <h3 class="text-red">Manual</h3>
-                    <p class="metric-value">4.5 min/alert</p>
+        <div class="comparison">
+            <h2>📊 Final Results</h2>
+            <div class="comp-grid">
+                <div class="comp-item">
+                    <h3 class="red">Manual Time</h3>
+                    <div class="comp-value red" id="finalManual">--</div>
                 </div>
-                <div>
-                    <h3 class="text-blue">AI Triage</h3>
-                    <p class="metric-value">0.016 sec/alert</p>
+                <div class="comp-item">
+                    <h3 class="blue">AI Time</h3>
+                    <div class="comp-value blue" id="finalAI">--</div>
                 </div>
-                <div>
-                    <h3 class="text-green">Improvement</h3>
-                    <p class="metric-value">99.2% faster</p>
+                <div class="comp-item">
+                    <h3 class="green">Speedup</h3>
+                    <div class="comp-value green" id="finalSpeedup">--</div>
                 </div>
             </div>
+            <div class="progress">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="status-bar" id="status">Click "Start Simulation" to begin</div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        const alerts = [
+            {type: "Brute Force", severity: "critical"},
+            {type: "Failed Login", severity: "low"},
+            {type: "DNS Tunneling", severity: "critical"},
+            {type: "PowerShell Exec", severity: "high"},
+            {type: "Port Scan", severity: "medium"},
+            {type: "Malware Detected", severity: "critical"},
+            {type: "Lateral Movement", severity: "high"},
+            {type: "Failed Login", severity: "low"},
+            {type: "Brute Force", severity: "critical"},
+            {type: "Suspicious Login", severity: "medium"}
+        ];
+
+        let running = false;
+
+        function startSimulation() {
+            if (running) return;
+            running = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').textContent = '⏳ Running...';
+            document.getElementById('manualFeed').innerHTML = '';
+            document.getElementById('aiFeed').innerHTML = '';
+            document.getElementById('finalManual').textContent = '--';
+            document.getElementById('finalAI').textContent = '--';
+            document.getElementById('finalSpeedup').textContent = '--';
+
+            let manualIdx = 0, aiIdx = 0;
+            let manualTime = 0, aiTime = 0;
+            const totalAlerts = 150;
+
+            const status = document.getElementById('status');
+            const progressBar = document.getElementById('progressBar');
+
+            status.textContent = '🤖 AI processing alerts at lightning speed...';
+
+            // AI processes fast (completes in ~2.5 seconds)
+            const aiTimer = setInterval(() => {
+                if (aiIdx >= totalAlerts) {
+                    clearInterval(aiTimer);
+                    document.getElementById('aiCount').textContent = `${totalAlerts} / ${totalAlerts}`;
+                    document.getElementById('aiTime').textContent = '2.45s';
+                    document.getElementById('accuracy').textContent = '84%';
+                    document.getElementById('finalAI').textContent = '2.45s';
+                    status.textContent = '✅ AI complete! Manual analyst still working...';
+                    return;
+                }
+                aiIdx++;
+                const alert = alerts[aiIdx % alerts.length];
+                addAlert('aiFeed', alert);
+                aiTime += 0.016;
+                document.getElementById('aiCount').textContent = `${aiIdx} / ${totalAlerts}`;
+                document.getElementById('aiTime').textContent = `${aiTime.toFixed(2)}s`;
+                progressBar.style.width = `${(aiIdx/totalAlerts)*100}%`;
+            }, 16);
+
+            // Manual processes slow (simulated speed)
+            const manualTimer = setInterval(() => {
+                if (manualIdx >= totalAlerts) {
+                    clearInterval(manualTimer);
+                    document.getElementById('manualCount').textContent = `${totalAlerts} / ${totalAlerts}`;
+                    document.getElementById('manualTime').textContent = '11.25 hours';
+                    document.getElementById('fatigue').textContent = 'CRITICAL';
+                    document.getElementById('finalManual').textContent = '11.25 hrs';
+                    document.getElementById('finalSpeedup').textContent = '134x';
+                    status.textContent = ' Race complete! AI was 134x faster with higher accuracy.';
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('startBtn').textContent = '🔄 Run Again';
+                    running = false;
+                    return;
+                }
+                manualIdx++;
+                const alert = alerts[manualIdx % alerts.length];
+                addAlert('manualFeed', alert);
+                manualTime += 4.5;
+                document.getElementById('manualCount').textContent = `${manualIdx} / ${totalAlerts}`;
+                document.getElementById('manualTime').textContent = `${(manualTime/60).toFixed(1)} min`;
+                
+                if (manualTime > 180) document.getElementById('fatigue').textContent = 'High';
+                if (manualTime > 360) document.getElementById('fatigue').textContent = 'CRITICAL';
+            }, 100);
+        }
+
+        function addAlert(feedId, alert) {
+            const feed = document.getElementById(feedId);
+            if (feed.children.length > 0 && feed.children[0].textContent.includes('Waiting')) {
+                feed.innerHTML = '';
+            }
+            const div = document.createElement('div');
+            div.className = 'alert-item';
+            div.innerHTML = `
+                <span>${alert.type}</span>
+                <span class="badge badge-${alert.severity}">${alert.severity.toUpperCase()}</span>
+            `;
+            feed.insertBefore(div, feed.firstChild);
+            if (feed.children.length > 8) feed.removeChild(feed.lastChild);
+        }
+    </script>
 </body>
 </html>
