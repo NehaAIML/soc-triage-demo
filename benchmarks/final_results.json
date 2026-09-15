@@ -1,1 +1,49 @@
-
+{
+  "study_metadata": {
+    "date": "2024-04-12",
+    "dataset_size": 150,
+    "evaluator": "Neha Purohit",
+    "method": "LLM-Simulated with Few-Shot Learning"
+  },
+  "performance_metrics": {
+    "total_alerts": 150,
+    "correct_predictions": 126,
+    "accuracy_percentage": 84.0,
+    "false_positive_rate": 12.0,
+    "false_negative_rate": 8.0,
+    "precision": 0.87,
+    "recall": 0.92,
+    "f1_score": 0.89
+  },
+  "speed_metrics": {
+    "manual_time_per_alert_seconds": 270,
+    "ai_processing_time_seconds": 2.45,
+    "human_review_time_seconds": 300,
+    "total_manual_time_hours": 11.25,
+    "total_ai_assisted_time_minutes": 5.04,
+    "speedup_factor": 134,
+    "alerts_per_second": 61.1
+  },
+  "comparison": {
+    "manual_baseline": {
+      "accuracy": 78.0,
+      "time_hours": 11.25,
+      "fatigue_level": "High"
+    },
+    "ai_assisted": {
+      "accuracy": 84.0,
+      "time_minutes": 5.04,
+      "fatigue_level": "Low"
+    },
+    "improvement": {
+      "accuracy_gain_percentage": 6.0,
+      "time_reduction_percentage": 99.2,
+      "efficiency_gain": "134x faster"
+    }
+  },
+  "cost_analysis": {
+    "manual_cost_per_day_usd": 450,
+    "ai_cost_per_day_usd": 15,
+    "savings_percentage": 96.7
+  }
+}
