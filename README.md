@@ -1,6 +1,6 @@
 # 🛡️ SOC Triage Automation: AI vs. Human Performance Study
 
-## 📌 Project Overview
+## 📌 Project Overview Here
 Security Operations Centers (SOCs) are drowning in alert fatigue. This project investigates and benchmarks the performance of AI-driven triage against traditional manual triage. We test multiple approaches (Rule-based, Random Forest, XGBoost, and LLM) to find the optimal balance of speed, accuracy, and explainability.
 
 ## 📊 Key Results
